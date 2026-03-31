@@ -46,7 +46,6 @@ import { toast } from 'sonner';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useDraftCache } from '@/lib/hooks/use-draft-cache';
 import { SpeechButton } from '@/components/audio/speech-button';
-import faviconImage from '@/assets/favicon.ico';
 
 const log = createLogger('Home');
 
@@ -490,7 +489,7 @@ function HomePage() {
         >
           <div className="group relative overflow-hidden rounded-[28px] border border-white/70 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 p-2 shadow-[0_22px_65px_-30px_rgba(15,23,42,0.45)] backdrop-blur-xl">
             <motion.img
-              src={faviconImage.src}
+              src="/favicon.ico"
               alt="星战AI云课堂"
               whileHover={{ scale: 1.03 }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
