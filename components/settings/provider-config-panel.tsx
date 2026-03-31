@@ -151,19 +151,37 @@ export function ProviderConfigPanel({
 
   const models = providersConfig[provider.id]?.models || [];
   const isServerConfigured = providersConfig[provider.id]?.isServerConfigured;
+  const serverBaseUrl = providersConfig[provider.id]?.serverBaseUrl;
 
   return (
     <div className="space-y-6 max-w-3xl">
       {/* Server-configured notice */}
       {isServerConfigured && (
-        <div className="rounded-lg border border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950/30 p-3 text-sm text-blue-700 dark:text-blue-300">
-          {t('settings.serverConfiguredNotice')}
+        <div className="rounded-lg border border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950/30 p-4 text-sm text-blue-700 dark:text-blue-300">
+          <div className="flex items-start gap-2">
+            <CheckCircle2 className="h-5 w-5 shrink-0 mt-0.5" />
+            <div className="space-y-1">
+              <p className="font-medium">{t('settings.serverConfiguredNotice')}</p>
+              {serverBaseUrl && (
+                <p className="text-xs opacity-80">
+                  {t('settings.apiHost')}: {serverBaseUrl}
+                </p>
+              )}
+            </div>
+          </div>
         </div>
       )}
 
       {/* API Key */}
       <div className="space-y-2">
-        <Label>{t('settings.apiSecret')}</Label>
+        <Label className="flex items-center gap-2">
+          {t('settings.apiSecret')}
+          {isServerConfigured && (
+            <span className="text-xs px-2 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
+              {t('settings.serverConfigured')}
+            </span>
+          )}
+        </Label>
         <div className="flex gap-2">
           <div className="relative flex-1">
             <Input
@@ -178,7 +196,7 @@ export function ProviderConfigPanel({
               onChange={(e) => handleApiKeyChange(e.target.value)}
               onBlur={onSave}
               disabled={!requiresApiKey && !isServerConfigured}
-              className="h-8 pr-8"
+              className={cn("h-8 pr-8", isServerConfigured && "border-blue-300 dark:border-blue-700")}
             />
             <button
               type="button"
@@ -208,6 +226,11 @@ export function ProviderConfigPanel({
             )}
           </Button>
         </div>
+        {isServerConfigured && !apiKey && (
+          <p className="text-xs text-muted-foreground">
+            {t('settings.serverConfiguredApiKeyHint') || '使用服务器端配置的 API 密钥，或在此处输入自定义密钥覆盖'}
+          </p>
+        )}
         {testMessage && (
           <div
             className={cn(
@@ -243,7 +266,14 @@ export function ProviderConfigPanel({
 
       {/* API Host */}
       <div className="space-y-2">
-        <Label>{t('settings.apiHost')}</Label>
+        <Label className="flex items-center gap-2">
+          {t('settings.apiHost')}
+          {isServerConfigured && serverBaseUrl && (
+            <span className="text-xs px-2 py-0.5 rounded bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300">
+              {t('settings.serverConfigured')}
+            </span>
+          )}
+        </Label>
         <Input
           name={`llm-base-url-${provider.id}`}
           type="url"
@@ -251,14 +281,19 @@ export function ProviderConfigPanel({
           autoCapitalize="none"
           autoCorrect="off"
           spellCheck={false}
-          placeholder={provider.defaultBaseUrl || 'https://api.example.com/v1'}
+          placeholder={isServerConfigured && serverBaseUrl ? serverBaseUrl : (provider.defaultBaseUrl || 'https://api.example.com/v1')}
           value={baseUrl}
           onChange={(e) => handleBaseUrlChange(e.target.value)}
           onBlur={onSave}
-          className="h-8"
+          className={cn("h-8", isServerConfigured && serverBaseUrl && "border-blue-300 dark:border-blue-700")}
         />
+        {isServerConfigured && serverBaseUrl && !baseUrl && (
+          <p className="text-xs text-muted-foreground">
+            {t('settings.serverConfiguredBaseUrlHint') || '使用服务器端配置的 API 地址，或在此处输入自定义地址覆盖'}
+          </p>
+        )}
         {(() => {
-          const effectiveBaseUrl = baseUrl || provider.defaultBaseUrl || '';
+          const effectiveBaseUrl = baseUrl || (isServerConfigured ? serverBaseUrl : provider.defaultBaseUrl) || '';
           if (!effectiveBaseUrl) return null;
 
           // Generate endpoint path based on provider type
