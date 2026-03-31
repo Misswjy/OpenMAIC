@@ -46,6 +46,7 @@ import { toast } from 'sonner';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useDraftCache } from '@/lib/hooks/use-draft-cache';
 import { SpeechButton } from '@/components/audio/speech-button';
+import faviconImage from '@/assets/favicon.ico';
 
 const log = createLogger('Home');
 
@@ -475,20 +476,38 @@ function HomePage() {
           classrooms.length === 0 ? 'justify-center min-h-[calc(100dvh-8rem)]' : 'mt-[10vh]',
         )}
       >
-        {/* ── Logo ── */}
-        <motion.img
-          src="/logo-horizontal.png"
-          alt="OpenMAIC"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
+        {/* ── Brand hero ── */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.92, y: 8 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{
             delay: 0.1,
             type: 'spring',
             stiffness: 200,
             damping: 20,
           }}
-          className="h-12 md:h-16 mb-2 -ml-2 md:-ml-3"
-        />
+          className="mb-3 flex flex-col items-center gap-4"
+        >
+          <div className="group relative overflow-hidden rounded-[28px] border border-white/70 dark:border-white/10 bg-white/70 dark:bg-slate-900/60 p-2 shadow-[0_22px_65px_-30px_rgba(15,23,42,0.45)] backdrop-blur-xl">
+            <motion.img
+              src={faviconImage.src}
+              alt="星战AI云课堂"
+              whileHover={{ scale: 1.03 }}
+              transition={{ duration: 0.3, ease: 'easeOut' }}
+              className="h-24 w-24 rounded-[22px] object-contain md:h-32 md:w-32"
+            />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/35 via-transparent to-violet-400/10 dark:from-white/10 dark:to-violet-500/10" />
+          </div>
+
+          <div className="flex flex-col items-center gap-1.5 text-center">
+            <span className="rounded-full border border-slate-200/80 dark:border-slate-700/70 bg-white/75 dark:bg-slate-900/55 px-3 py-1 text-[11px] font-medium tracking-[0.32em] text-slate-500 dark:text-slate-400 shadow-sm backdrop-blur">
+              CLASSROOM
+            </span>
+            <h1 className="text-3xl font-semibold tracking-[0.18em] text-slate-900 dark:text-slate-50 md:text-5xl">
+              星战AI云课堂
+            </h1>
+          </div>
+        </motion.div>
 
         {/* ── Slogan ── */}
         <motion.p
