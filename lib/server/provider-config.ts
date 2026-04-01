@@ -336,11 +336,12 @@ export function resolvePDFBaseUrl(providerId: string, clientBaseUrl?: string): s
 // Public API — Image Generation
 // ---------------------------------------------------------------------------
 
-export function getServerImageProviders(): Record<string, Record<string, never>> {
+export function getServerImageProviders(): Record<string, { baseUrl?: string }> {
   const cfg = getConfig();
-  const result: Record<string, Record<string, never>> = {};
-  for (const id of Object.keys(cfg.image)) {
+  const result: Record<string, { baseUrl?: string }> = {};
+  for (const [id, entry] of Object.entries(cfg.image)) {
     result[id] = {};
+    if (entry.baseUrl) result[id].baseUrl = entry.baseUrl;
   }
   return result;
 }
@@ -362,11 +363,12 @@ export function resolveImageBaseUrl(
 // Public API — Video Generation
 // ---------------------------------------------------------------------------
 
-export function getServerVideoProviders(): Record<string, Record<string, never>> {
+export function getServerVideoProviders(): Record<string, { baseUrl?: string }> {
   const cfg = getConfig();
-  const result: Record<string, Record<string, never>> = {};
-  for (const id of Object.keys(cfg.video)) {
+  const result: Record<string, { baseUrl?: string }> = {};
+  for (const [id, entry] of Object.entries(cfg.video)) {
     result[id] = {};
+    if (entry.baseUrl) result[id].baseUrl = entry.baseUrl;
   }
   return result;
 }
