@@ -159,6 +159,16 @@ function loadEnvSection(
           .filter(Boolean)
       : undefined;
 
+    // Log which env vars are found (but don't log sensitive API keys)
+    if (envApiKey || envBaseUrl || envModels) {
+      log.debug(`[ServerProviderConfig] Found env vars for ${providerId}:`, {
+        hasApiKey: !!envApiKey,
+        hasBaseUrl: !!envBaseUrl,
+        hasModels: !!envModels,
+        prefix,
+      });
+    }
+
     if (result[providerId]) {
       // YAML entry exists — env vars override individual fields
       if (envApiKey) result[providerId].apiKey = envApiKey;
