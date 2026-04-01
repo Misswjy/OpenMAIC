@@ -127,6 +127,7 @@ export function SceneSidebar({
             title={t('generation.backToHome')}
           >
             <img src="/home.jpg" alt="OpenMAIC" className="h-6" />
+            <span className="text-sm font-bold text-gray-800 dark:text-gray-200">星战云课堂</span>
           </button>
           <button
             onClick={() => onCollapseChange(true)}
