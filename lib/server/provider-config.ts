@@ -217,13 +217,11 @@ function logConfig(config: ServerConfig, label: string): void {
 }
 
 function getConfig(): ServerConfig {
-  const cached = _configs.get('');
-  if (cached) return cached;
-
+  // Don't cache config to ensure environment variables are always fresh
+  // This fixes the issue where Docker container doesn't pick up env vars after startup
   const yamlData = loadYamlFile(DEFAULT_FILENAME);
   const config = buildConfig(yamlData);
   logConfig(config, DEFAULT_FILENAME);
-  _configs.set('', config);
   return config;
 }
 
