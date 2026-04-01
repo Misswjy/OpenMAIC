@@ -1105,10 +1105,18 @@ export const useSettingsStore = create<SettingsState>()(
                 }
               }
 
-              // LLM auto-select: only on true first load (no provider selected yet)
+              // LLM auto-select: on first load OR when current provider is not server-configured but there are server-configured providers
               let autoProviderId: ProviderId | undefined;
               let autoModelId: string | undefined;
-              if (!state.providerId && !state.modelId) {
+              
+              // Check if current provider is not server-configured but there are server-configured providers available
+              const hasServerConfiguredProviders = Object.values(newProvidersConfig).some(cfg => cfg.isServerConfigured);
+              const currentProviderIsServerConfigured = state.providerId && newProvidersConfig[state.providerId as ProviderId]?.isServerConfigured;
+              
+              // Auto-select if:
+              // 1. No provider selected yet (first load), OR
+              // 2. Current provider is not server-configured but there are server-configured providers available
+              if ((!state.providerId && !state.modelId) || (hasServerConfiguredProviders && !currentProviderIsServerConfigured)) {
                 for (const [pid, cfg] of Object.entries(newProvidersConfig)) {
                   if (cfg.isServerConfigured) {
                     // Prefer server-restricted models, fall back to built-in list
@@ -1305,9 +1313,15 @@ export const useSettingsStore = create<SettingsState>()(
           (state as Record<string, unknown>).asrEnabled = true;
         }
 
-        // Existing users already have their config set up — mark auto-config as done
+        // Only mark auto-config as done if user has already configured providers
         if ((state as Record<string, unknown>).autoConfigApplied === undefined) {
-          (state as Record<string, unknown>).autoConfigApplied = true;
+          // Check if user has any configured providers (client-side keys)
+          const hasClientConfiguredProviders = Object.values(
+            (state.providersConfig as Record<string, { apiKey?: string }>) || {}
+          ).some(cfg => cfg.apiKey);
+          
+          // Only mark as done if user has already configured something
+          (state as Record<string, unknown>).autoConfigApplied = hasClientConfiguredProviders;
         }
 
         if ((state as Record<string, unknown>).agentMode === undefined) {
