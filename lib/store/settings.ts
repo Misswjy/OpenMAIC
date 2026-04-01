@@ -885,6 +885,7 @@ export const useSettingsStore = create<SettingsState>()(
                     ...newImageConfig[key],
                     isServerConfigured: true,
                     serverBaseUrl: info.baseUrl,
+                    enabled: true,
                   };
                 }
               }
@@ -909,6 +910,7 @@ export const useSettingsStore = create<SettingsState>()(
                       ...newVideoConfig[key],
                       isServerConfigured: true,
                       serverBaseUrl: info.baseUrl,
+                      enabled: true,
                     };
                   }
                 }
