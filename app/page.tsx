@@ -166,6 +166,9 @@ function HomePage() {
     useMediaGenerationStore.getState().revokeObjectUrls();
     useMediaGenerationStore.setState({ tasks: {} });
 
+    // Fetch server-configured providers
+    useSettingsStore.getState().fetchServerProviders();
+
     // eslint-disable-next-line react-hooks/set-state-in-effect -- Store hydration on mount
     loadClassrooms();
   }, []);
