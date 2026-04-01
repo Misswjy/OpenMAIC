@@ -159,6 +159,16 @@ function loadEnvSection(
           .filter(Boolean)
       : undefined;
 
+    // Log which env vars are found (but don't log sensitive API keys)
+    if (envApiKey || envBaseUrl || envModels) {
+      log.debug(`[ServerProviderConfig] Found env vars for ${providerId}:`, {
+        hasApiKey: !!envApiKey,
+        hasBaseUrl: !!envBaseUrl,
+        hasModels: !!envModels,
+        prefix,
+      });
+    }
+
     if (result[providerId]) {
       // YAML entry exists — env vars override individual fields
       if (envApiKey) result[providerId].apiKey = envApiKey;
@@ -217,13 +227,11 @@ function logConfig(config: ServerConfig, label: string): void {
 }
 
 function getConfig(): ServerConfig {
-  const cached = _configs.get('');
-  if (cached) return cached;
-
+  // Don't cache config to ensure environment variables are always fresh
+  // This fixes the issue where Docker container doesn't pick up env vars after startup
   const yamlData = loadYamlFile(DEFAULT_FILENAME);
   const config = buildConfig(yamlData);
   logConfig(config, DEFAULT_FILENAME);
-  _configs.set('', config);
   return config;
 }
 
